@@ -1,0 +1,82 @@
+\chapter{Testing and Results}
+\label{ch:testing}
+
+\section{Testing Strategy}
+\placeholder{Describe the testing levels used, such as unit, integration, functional, data-quality, model, security, or usability testing. State what was and was not tested.}
+
+\section{Test Environment}
+\placeholder{Describe the environment, dataset version, software versions, configuration, and controls needed to reproduce the tests.}
+
+\section{Functional Test Cases}
+\begin{longtable}{p{0.12\textwidth}p{0.25\textwidth}p{0.25\textwidth}p{0.25\textwidth}}
+  \caption{Functional test cases template}\label{tab:functional-tests}\\
+  \toprule
+  \textbf{ID} & \textbf{Test input/scenario} & \textbf{Expected result} & \textbf{Observed result/status}\\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{ID} & \textbf{Test input/scenario} & \textbf{Expected result} & \textbf{Observed result/status}\\
+  \midrule
+  \endhead
+  FT-01 & \insertplaceholder{SCENARIO} & \insertplaceholder{EXPECTED RESULT} & \insertplaceholder{OBSERVED RESULT}\\
+  FT-02 & \insertplaceholder{SCENARIO} & \insertplaceholder{EXPECTED RESULT} & \insertplaceholder{OBSERVED RESULT}\\
+  FT-03 & \insertplaceholder{SCENARIO} & \insertplaceholder{EXPECTED RESULT} & \insertplaceholder{OBSERVED RESULT}\\
+  \bottomrule
+\end{longtable}
+
+\section{Model Evaluation Methodology}
+\placeholder{Explain the evaluation dataset, reference labels, split strategy, baselines, threshold selection, confidence intervals or repeated runs if used, and any risks of leakage.}
+
+\section{Evaluation Metrics}
+\placeholder{Define the metrics actually used and explain why they are appropriate for the project's fraud-detection context.}
+
+\begin{table}[htbp]
+  \centering
+  \caption{Model evaluation results template}
+  \label{tab:model-results}
+  \begin{tabular}{lcccccc}
+    \toprule
+    \textbf{Model/version} & \textbf{Accuracy} & \textbf{Precision} & \textbf{Recall} & \textbf{F1-score} & \textbf{Support} & \textbf{Notes}\\
+    \midrule
+    \insertplaceholder{MODEL} & \metricplaceholder{ACCURACY} & \metricplaceholder{PRECISION} & \metricplaceholder{RECALL} & \metricplaceholder{F1} & \metricplaceholder{SUPPORT} & \insertplaceholder{NOTES}\\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\section{Confusion Matrix}
+\insertfigure{figures/confusion-matrix.pdf}{Placeholder for the confusion matrix}{fig:confusion-matrix}
+\placeholder{Insert the actual confusion matrix and explain true positives, true negatives, false positives, and false negatives using the project's label definitions.}
+
+\section{False Positives and False Negatives}
+\placeholder{Provide anonymized examples or aggregate analysis of false positives and false negatives. Explain their likely causes and practical implications.}
+
+\section{Example Predictions}
+\begin{longtable}{p{0.30\textwidth}p{0.18\textwidth}p{0.18\textwidth}p{0.22\textwidth}}
+  \caption{Anonymized example predictions template}\label{tab:example-predictions}\\
+  \toprule
+  \textbf{Anonymized message or summary} & \textbf{Reference label} & \textbf{System output} & \textbf{Interpretation}\\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Anonymized message or summary} & \textbf{Reference label} & \textbf{System output} & \textbf{Interpretation}\\
+  \midrule
+  \endhead
+  \insertplaceholder{ANONYMIZED EXAMPLE} & \insertplaceholder{LABEL} & \insertplaceholder{OUTPUT} & \insertplaceholder{INTERPRETATION}\\
+  \bottomrule
+\end{longtable}
+
+\section{Performance Observations}
+\placeholder{Report measured runtime, throughput, memory, or operational observations only where they were actually collected.}
+
+\section{Graphs, Charts, and Screenshots}
+\insertfigure{figures/results-chart.pdf}{Placeholder for a results chart}{fig:results-chart}
+\placeholder{Replace the figure with a chart that communicates a verified result. Include units, axis labels, sample size, and an informative caption.}
+
+\insertfigure{figures/system-screenshot.png}{Placeholder for a system screenshot}{fig:system-screenshot}
+\placeholder{Insert an anonymized screenshot if appropriate. Remove sensitive information and confirm that its inclusion is permitted.}
+
+\section{Discussion of Results}
+\placeholder{Interpret the results in relation to the requirements and objectives. Do not merely repeat the table. State what the results support, what they do not establish, and what uncertainty remains.}
+
+\section{Chapter Summary}
+\placeholder{Summarize the evidence that will be interpreted in \chapterref{ch:discussion}.}

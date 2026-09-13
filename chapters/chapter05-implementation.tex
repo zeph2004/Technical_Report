@@ -1,0 +1,77 @@
+\chapter{Implementation}
+\label{ch:implementation}
+
+\section{Development Environment}
+\begin{table}[htbp]
+  \centering
+  \caption{Development environment template}
+  \label{tab:development-environment}
+  \begin{tabularx}{0.95\textwidth}{p{0.30\textwidth}X}
+    \toprule
+    Operating system & \insertplaceholder{OPERATING SYSTEM AND VERSION}\\
+    Hardware/resources & \insertplaceholder{RELEVANT HARDWARE OR RESOURCE LIMITS}\\
+    Language/runtime & \insertplaceholder{LANGUAGE AND VERSION}\\
+    Libraries/frameworks & \insertplaceholder{LIBRARIES AND VERSIONS}\\
+    Development tools & \insertplaceholder{IDE, NOTEBOOK, CLI, OR OTHER TOOLS}\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Project Structure}
+\placeholder{Describe the actual project structure and the responsibility of important directories or modules. Avoid reproducing the complete source tree.}
+
+\section{System Components}
+\placeholder{Explain how the designed components were implemented and connected. Use subsections only for components that materially contribute to the project.}
+
+\section{Data Preprocessing Implementation}
+\placeholder{Describe the implemented preprocessing sequence, edge cases, validation, and how sensitive fields were handled.}
+
+\section{Feature Engineering}
+\placeholder{Describe the implemented features and the rationale for each. Include a short excerpt only if it clarifies the method.}
+
+\begin{lstlisting}[language=Python,caption={Illustrative placeholder for a short preprocessing or feature-extraction excerpt},label={lst:preprocessing-excerpt}]
+# Replace this illustrative excerpt with a short, anonymized project excerpt.
+# Do not include credentials, personal data, or an entire source file.
+def transform_message(message):
+    normalized = "[INSERT ACTUAL NORMALIZATION STEPS]"
+    features = "[INSERT ACTUAL FEATURE REPRESENTATION]"
+    return normalized, features
+\end{lstlisting}
+\placeholder{Explain what the final excerpt does, why it matters, and how it was tested.}
+
+\section{Model Implementation}
+\placeholder{Describe model construction, configuration, training code organization, persistence, and versioning.}
+
+\section{Training Process}
+\placeholder{Document the actual training sequence, data split, repeatability controls, resource use, and artifact outputs. Insert run identifiers or configuration references if available.}
+
+\section{Prediction and Inference Process}
+\placeholder{Describe how a new SMS is processed and how the system returns a label, score, explanation, or review recommendation.}
+
+\section{Backend or API Components}
+\placeholder{If applicable, describe endpoints, request/response structures, validation, authentication, error handling, and integration boundaries. Remove this section if it does not apply.}
+
+\section{Integration Between Components}
+\placeholder{Explain how preprocessing, model inference, storage, interface, and monitoring components communicate.}
+
+\section{Deployment Environment}
+\placeholder{Describe the deployment environment only if deployment occurred. Otherwise state the implementation or demonstration boundary and what would be required for deployment.}
+
+\section{Implementation Challenges}
+\begin{longtable}{p{0.25\textwidth}p{0.32\textwidth}p{0.32\textwidth}}
+  \caption{Implementation challenges and responses}\label{tab:implementation-challenges}\\
+  \toprule
+  \textbf{Challenge} & \textbf{Effect on project} & \textbf{Response or engineering decision}\\
+  \midrule
+  \endfirsthead
+  \toprule
+  \textbf{Challenge} & \textbf{Effect on project} & \textbf{Response or engineering decision}\\
+  \midrule
+  \endhead
+  \insertplaceholder{CHALLENGE} & \insertplaceholder{EFFECT} & \insertplaceholder{RESPONSE}\\
+  \insertplaceholder{CHALLENGE} & \insertplaceholder{EFFECT} & \insertplaceholder{RESPONSE}\\
+  \bottomrule
+\end{longtable}
+
+\section{Chapter Summary}
+\placeholder{Summarize what was implemented and identify the implementation aspects evaluated in the next chapter.}

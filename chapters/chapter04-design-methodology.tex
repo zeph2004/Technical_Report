@@ -1,0 +1,72 @@
+\chapter{System Design and Methodology}
+\label{ch:design}
+
+\section{Overall System Architecture}
+\insertfigure{figures/system-architecture.pdf}{Placeholder for the system architecture}{fig:architecture}
+\placeholder{Describe the architecture shown in \figureref{fig:architecture}, including data sources, processing stages, model services, interfaces, storage, and outputs.}
+
+\section{System Components}
+\placeholder{Describe each component and its responsibility. Link each component to the requirements in \chapterref{ch:requirements}.}
+
+\section{Data Flow}
+\insertfigure{figures/data-flow.pdf}{Placeholder for the data-flow diagram}{fig:data-flow}
+\placeholder{Explain how SMS data moves through ingestion, preprocessing, feature extraction, classification, result handling, and any feedback or monitoring loop.}
+
+\section{Data Acquisition}
+\placeholder{Describe how data was obtained, authorized, transferred, stored, and anonymized. Insert real source and volume details only after verification.}
+
+\section{Data Cleaning and Preprocessing}
+\placeholder{Document normalization, duplicate handling, missing values, encoding, language handling, removal or masking of sensitive fields, and any rules for preserving transaction meaning.}
+
+\section{Data Labeling}
+\placeholder{Explain who or what assigned labels, the label definitions, quality checks, disagreements, and any limitations in the ground truth.}
+
+\section{Feature Extraction and Text Representation}
+\placeholder{Describe the representation used, such as token counts, n-grams, embeddings, structured fields, or hybrid features. Explain why it was selected.}
+
+\section{NLP Methodology}
+\placeholder{Describe the NLP steps that were actually used. Avoid listing techniques that were only considered unless they are clearly identified as alternatives.}
+
+\section{Machine Learning Methodology}
+\placeholder{Describe the learning task, target labels, training procedure, split strategy, imbalance handling, thresholding, and reproducibility controls.}
+
+\section{Model Selection}
+\placeholder{List candidate models considered, selection criteria, baseline choice, and reasons for the final selection.}
+
+\section{Training and Validation Methodology}
+\placeholder{Describe how training, validation, and test data were separated; how leakage was prevented; and how hyperparameters or thresholds were chosen.}
+
+\section{Detection and Classification Workflow}
+\insertfigure{figures/processing-pipeline.pdf}{Placeholder for the processing pipeline}{fig:pipeline}
+\placeholder{Walk through one message from input to output. Identify where confidence, risk score, class label, explanation, or human review enters the workflow.}
+
+\section{Technology Stack}
+\begin{table}[htbp]
+  \centering
+  \caption{Technology stack template}
+  \label{tab:technology-stack}
+  \begin{tabularx}{0.95\textwidth}{p{0.25\textwidth}p{0.30\textwidth}X}
+    \toprule
+    \textbf{Layer} & \textbf{Technology/tool} & \textbf{Purpose and version, if relevant}\\
+    \midrule
+    Data processing & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
+    NLP/feature extraction & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
+    Model training & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
+    Application/API & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
+    Storage & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
+    Testing/monitoring & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
+
+\section{Development Methodology}
+\placeholder{Describe the development process used, such as iterative development, Agile/Scrum, or another approach. Include only ceremonies, iterations, roles, and artifacts that actually applied.}
+
+\section{Design Decisions and Justification}
+\placeholder{Discuss important decisions and alternatives. For each decision, explain the technical, operational, security, privacy, or maintainability trade-off.}
+
+\section{Security, Privacy, and Data Protection by Design}
+\placeholder{Explain controls built into the design, including minimization, anonymization, access control, secure storage, secrets handling, auditability, and protection against misuse.}
+
+\section{Chapter Summary}
+\placeholder{Summarize the design and methodology before presenting implementation details.}

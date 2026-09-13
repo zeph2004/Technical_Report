@@ -1,0 +1,41 @@
+# macOS metadata
+.DS_Store
+
+# LaTeX compilation artifacts
+*.aux
+*.acn
+*.acr
+*.alg
+*.bbl
+*.bcf
+*.blg
+*.dvi
+*.fdb_latexmk
+*.fls
+*.glg
+*.glo
+*.gls
+*.idx
+*.ilg
+*.ind
+*.lof
+*.log
+*.lot
+*.ist
+*.nav
+*.out
+*.ps
+*.run.xml
+*.snm
+*.synctex
+*.synctex.gz
+*.toc
+*.vrb
+*.xdv
+
+# Generated document output
+/*.pdf
+
+# Common LaTeX build directories
+/build/
+/out/
