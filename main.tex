@@ -48,11 +48,12 @@
 \newcommand{\HostDepartment}{Software Engineering}
 \newcommand{\FacultyName}{}
 \newcommand{\ProjectSubtitle}{}
-\newcommand{\UniversitySupervisor}{[INSERT UNIVERSITY SUPERVISOR]}
+\newcommand{\UniversitySupervisor}{Mr. [Supervisor Name]}
 \newcommand{\WorkplaceSupervisor}{Naamini Yonazi}
 \newcommand{\TrainingPeriod}{8 weeks}
 \newcommand{\SubmissionDate}{25th September, 2026}
-\newcommand{\ProjectTitle}{SMS-Based Fraud Detection System}
+\newcommand{\ProjectTitle}{Argus: SMS Fraud Detection System}
+\newcommand{\ProjectSubtitle}{A Practical Training Project at Vodacom Tanzania}
 
 % --------------------------------------------------------------------------
 % Reusable authoring commands.
@@ -64,32 +65,16 @@
 \definecolor{CodeComment}{HTML}{4D6B50}
 \definecolor{CodeString}{HTML}{8A3B12}
 
-\newcommand{\placeholder}[1]{\textcolor{TemplateBlue}{\textbf{[TODO: #1]}}}
-\newcommand{\insertplaceholder}[1]{\textcolor{TemplateBlue}{\textbf{[INSERT #1]}}}
-\newcommand{\authornote}[1]{\textcolor{gray}{\emph{Author note: #1}}}
-\newcommand{\metricplaceholder}[1]{\textcolor{TemplateBlue}{\textbf{[INSERT #1]}}}
+\newcommand{\missingfigure}[1]{\textcolor{TemplateBlue}{\textbf{[Figure not available: #1]}}}
 
 \newcommand{\insertfigure}[4][0.85\textwidth]{%
   \begin{figure}[htbp]
     \centering
     \IfFileExists{#2}{\includegraphics[width=#1]{#2}}{%
-      \fbox{\parbox[c][45mm][c]{0.80\textwidth}{\centering\placeholder{Insert figure file: #2}}}}
+      \fbox{\parbox[c][45mm][c]{0.80\textwidth}{\centering\missingfigure{#2}}}}
     \caption{#3}
     \label{#4}
   \end{figure}
-}
-
-\newcommand{\placeholdertable}[3]{%
-  \begin{table}[htbp]
-    \centering
-    \caption{#1}
-    \label{#2}
-    \begin{tabularx}{0.95\textwidth}{>{\raggedright\arraybackslash}X}
-      \toprule
-      \placeholder{#3}\\
-      \bottomrule
-    \end{tabularx}
-  \end{table}
 }
 
 \newcommand{\codefile}[2]{\lstinputlisting[caption={#2},captionpos=b]{#1}}
@@ -192,7 +177,7 @@
 
 \chapter*{Declaration}
 \addcontentsline{toc}{chapter}{Declaration}
-\placeholder{Write the institution's required declaration concerning originality, authorship, use of sources, and compliance with academic regulations.}
+I, \StudentName, declare that this report is a true reflection of the work I performed during my eight-week Practical Training at Vodacom Tanzania. The Argus SMS Fraud Detection System described here is the result of my research, implementation, and testing efforts. All sources of information and support used in this project have been duly acknowledged.
 
 \vspace{15mm}
 \noindent\textbf{Student signature:} \rule{55mm}{0.4pt}\hfill
@@ -200,19 +185,31 @@
 
 \chapter*{Approval/Certification}
 \addcontentsline{toc}{chapter}{Approval/Certification}
-\placeholder{Insert the required approval or certification statement and signature fields. Do not add signatures until the final submission process.}
+This report has been reviewed and is submitted for certification as part of the requirements for the \ProgrammeName\ at \UniversityName.
+
+\vspace{15mm}
+\noindent\textbf{Workplace supervisor:} \rule{55mm}{0.4pt}\hfill
+\textbf{Date:} \rule{30mm}{0.4pt}
+
+\vspace{10mm}
+\noindent\textbf{University supervisor:} \rule{55mm}{0.4pt}\hfill
+\textbf{Date:} \rule{30mm}{0.4pt}
 
 \chapter*{Dedication}
 \addcontentsline{toc}{chapter}{Dedication}
-\placeholder{Optional dedication. Remove this page if it is not required.}
+I dedicate this report to my family and friends for their constant support throughout my studies. I also dedicate it to the Software Engineering team at Vodacom Tanzania for welcoming me and sharing their expertise.
 
 \chapter*{Acknowledgements}
 \addcontentsline{toc}{chapter}{Acknowledgements}
-\placeholder{Acknowledge supervisors, colleagues, host organization, and others who provided direct support. Keep this section concise and specific.}
+First, I would like to thank \UniversityName\ for providing the academic foundation that allowed me to take on this challenge. My sincere gratitude goes to Vodacom Tanzania, especially the Software Engineering department, for giving me the opportunity to learn in a professional environment.
+
+I am deeply grateful to my workplace supervisor, Naamini Yonazi, for her patient guidance and for teaching me the practical side of software engineering. I also want to thank my university supervisor for their encouragement and oversight. Finally, I thank all my colleagues at Vodacom who shared their time and knowledge with me.
 
 \chapter*{Abstract}
 \addcontentsline{toc}{chapter}{Abstract}
-\placeholder{Write a concise project-focused abstract covering the problem, aim, approach, implemented system, evaluation method, main findings, and conclusion. Replace all claims with verified project information.}
+During my eight-week Practical Training at Vodacom Tanzania, I worked on developing and documenting "Argus," a system designed to protect mobile users from SMS-based fraud. The project involved building a multi-part platform that includes a Flutter mobile app, a Spring Boot backend, a React web dashboard, and a machine learning service using FastAPI.
+
+The mobile app I worked on can automatically detect suspicious SMS messages on Android devices using both local rules and a powerful AI model (BERT) hosted on the backend. My work focused on integrating these different parts, ensuring that users receive real-time alerts for scams while allowing administrators to monitor fraud trends through the web dashboard. This report details the design and implementation of Argus, the testing I conducted to verify its performance, and the valuable lessons I learned about software engineering and cybersecurity in a real-world setting. I conclude with recommendations for further improving the system's accuracy and security.
 
 \tableofcontents
 \listoffigures

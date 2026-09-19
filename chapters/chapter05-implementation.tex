@@ -1,77 +1,104 @@
-\chapter{Implementation}
+\chapter{Implementation Details}
 \label{ch:implementation}
 
 \section{Development Environment}
+To set up the project and begin writing and running code, I configured a local development environment. The tools and software versions I used during my practical training are listed in Table~\ref{tab:development-environment}.
+
 \begin{table}[htbp]
   \centering
-  \caption{Development environment template}
+  \caption{My practical training development environment}
   \label{tab:development-environment}
-  \begin{tabularx}{0.95\textwidth}{p{0.30\textwidth}X}
+  \begin{tabularx}{\textwidth}{p{0.30\textwidth} X}
     \toprule
-    Operating system & \insertplaceholder{OPERATING SYSTEM AND VERSION}\\
-    Hardware/resources & \insertplaceholder{RELEVANT HARDWARE OR RESOURCE LIMITS}\\
-    Language/runtime & \insertplaceholder{LANGUAGE AND VERSION}\\
-    Libraries/frameworks & \insertplaceholder{LIBRARIES AND VERSIONS}\\
-    Development tools & \insertplaceholder{IDE, NOTEBOOK, CLI, OR OTHER TOOLS}\\
+    \textbf{Component} & \textbf{Technology / Tool Used}\\
+    \midrule
+    Operating System & macOS (Darwin) and Windows 11 \\
+    Programming Languages & Java 21, Dart (Flutter 3), Python 3.10, TypeScript (React 19)\\
+    Frameworks \& Libraries & Spring Boot 3, Spring Security, FastAPI, HuggingFace Transformers, PyTorch\\
+    Databases & PostgreSQL 15, Flutter SharedPreferences\\
+    Containerization & Docker and Docker Compose v2\\
+    IDE \& Tooling & VS Code, IntelliJ IDEA, Maven, Git\\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\section{Project Structure}
-\placeholder{Describe the actual project structure and the responsibility of important directories or modules. Avoid reproducing the complete source tree.}
+\section{Monorepo Project Structure}
+I worked inside a single, structured monorepo containing all the services. To manage the code, I focused on these four main folders:
+\begin{enumerate}
+  \item \textbf{\texttt{frontend/}:} This contains the canonical Flutter mobile app (named `secure_signal`). It has its own \texttt{lib/main.dart} file, customized views for login/scans, and the background SMS listener.
+  \item \textbf{\texttt{backend/}:} The Spring Boot Java API, which contains Maven configuration (\texttt{pom.xml}), Flyway database migrations (\texttt{db/migration}), and java controllers.
+  \item \textbf{\texttt{web-client/}:} The administrator dashboard built with React and Vite.
+  \item \texttt{main.py} and \textbf{\texttt{final\_model/}:} The Python script that runs FastAPI and the folder containing the saved BERT model weights and config files.
+\end{enumerate}
 
-\section{System Components}
-\placeholder{Explain how the designed components were implemented and connected. Use subsections only for components that materially contribute to the project.}
+Note: The root \texttt{lib/} directory is a legacy or older version of the mobile app, which we retired to avoid duplication, making \texttt{frontend/} our main focus.
 
-\section{Data Preprocessing Implementation}
-\placeholder{Describe the implemented preprocessing sequence, edge cases, validation, and how sensitive fields were handled.}
+\section{Data Preprocessing and Heuristics Implementation}
+The local rule-based engine in Flutter uses regular expressions and case-insensitive word matching. For example, if a message matches words like "AirtelMoney", "M-Pesa", "win prize", "transfer to", or Swahili phrases such as "utatuma" (you will send) or "hakikisha jina", the app immediately identifies the threat level.
 
-\section{Feature Engineering}
-\placeholder{Describe the implemented features and the rationale for each. Include a short excerpt only if it clarifies the method.}
+On the machine learning service, the input string must be checked to make sure it is not empty. If the message is valid, it is prepared for BERT using the HuggingFace tokenizer. The implementation is shown in Listing~\ref{lst:preprocessing-excerpt}.
 
-\begin{lstlisting}[language=Python,caption={Illustrative placeholder for a short preprocessing or feature-extraction excerpt},label={lst:preprocessing-excerpt}]
-# Replace this illustrative excerpt with a short, anonymized project excerpt.
-# Do not include credentials, personal data, or an entire source file.
-def transform_message(message):
-    normalized = "[INSERT ACTUAL NORMALIZATION STEPS]"
-    features = "[INSERT ACTUAL FEATURE REPRESENTATION]"
-    return normalized, features
+\begin{lstlisting}[language=Python,caption={My FastAPI text prediction endpoint implementation},label={lst:preprocessing-excerpt}]
+@app.post("/predict")
+def predict(request: PredictRequest):
+    # Make sure message is not empty
+    if not request.message.strip():
+        raise HTTPException(status_code=400, detail="message is required")
+        
+    # Tokenize the text to fit the BERT model's 128 limit
+    encoded = tokenizer(request.message, truncation=True,
+                        max_length=128, return_tensors="pt")
+                        
+    # Run the model to get raw prediction outputs
+    output = model(**encoded)
+    
+    # Format and return the label and confidence percentage
+    return format_label_and_confidence(output, request.message)
 \end{lstlisting}
-\placeholder{Explain what the final excerpt does, why it matters, and how it was tested.}
 
-\section{Model Implementation}
-\placeholder{Describe model construction, configuration, training code organization, persistence, and versioning.}
+This API code is simple, reliable, and runs on port 8000, allowing our Spring Boot service to connect to it over the local network.
 
-\section{Training Process}
-\placeholder{Document the actual training sequence, data split, repeatability controls, resource use, and artifact outputs. Insert run identifiers or configuration references if available.}
+\section{Model Loading and Prediction}
+When the FastAPI application starts, the BERT classifier is loaded from the directory \texttt{./final\_model} using the \texttt{from\_pretrained()} method from the HuggingFace library. The model weights are loaded into CPU memory (or CUDA GPU if available). Since the model is loaded once at startup, predictions are extremely fast, usually taking only a few milliseconds.
 
-\section{Prediction and Inference Process}
-\placeholder{Describe how a new SMS is processed and how the system returns a label, score, explanation, or review recommendation.}
+\section{Backend and Database Integration}
+The Spring Boot backend uses Flyway to automatically create and update database tables on startup. I analyzed the database migration scripts:
+\begin{itemize}
+  \item \texttt{V1__init.sql}: Creates tables for users, roles, and admin credentials.
+  \item \texttt{V3__sms_scans.sql}: Creates the \texttt{sms_scans} table to log malicious messages.
+  \item \texttt{V4__make_user_id_and_verdict_nullable.sql}: Simplifies integration by allowing scan submissions from anonymous or unregistered users.
+\end{itemize}
 
-\section{Backend or API Components}
-\placeholder{If applicable, describe endpoints, request/response structures, validation, authentication, error handling, and integration boundaries. Remove this section if it does not apply.}
+The Spring Boot backend acts as a bridge. When the mobile app requests a scan, the backend routes the message to the Python FastAPI, receives the result, and if the message is a scam, records the sender, body, confidence, and timestamp into the PostgreSQL database.
 
-\section{Integration Between Components}
-\placeholder{Explain how preprocessing, model inference, storage, interface, and monitoring components communicate.}
+\section{Deployment with Docker Compose}
+To make testing easier, I packaged the entire stack using Docker Compose. The \texttt{docker-compose.yml} file launches:
+\begin{enumerate}
+  \item A PostgreSQL 15 database on port 5432, with a persistent folder to make sure our data is not lost when we stop the container.
+  \item The Python ML service on port 8000, which loads the saved BERT model.
+  \item The Spring Boot backend on port 8080, which connects to both PostgreSQL and the ML service using Docker's internal networking (\texttt{http://ml-service:8000}).
+\end{enumerate}
 
-\section{Deployment Environment}
-\placeholder{Describe the deployment environment only if deployment occurred. Otherwise state the implementation or demonstration boundary and what would be required for deployment.}
+Running \texttt{docker-compose up} automatically builds, links, and starts all these services, which saved me a lot of time during my practical training.
 
 \section{Implementation Challenges}
-\begin{longtable}{p{0.25\textwidth}p{0.32\textwidth}p{0.32\textwidth}}
-  \caption{Implementation challenges and responses}\label{tab:implementation-challenges}\\
-  \toprule
-  \textbf{Challenge} & \textbf{Effect on project} & \textbf{Response or engineering decision}\\
-  \midrule
-  \endfirsthead
-  \toprule
-  \textbf{Challenge} & \textbf{Effect on project} & \textbf{Response or engineering decision}\\
-  \midrule
-  \endhead
-  \insertplaceholder{CHALLENGE} & \insertplaceholder{EFFECT} & \insertplaceholder{RESPONSE}\\
-  \insertplaceholder{CHALLENGE} & \insertplaceholder{EFFECT} & \insertplaceholder{RESPONSE}\\
-  \bottomrule
-\end{longtable}
+During the integration phase of my practical training, I encountered several real-world software engineering challenges. I have summarized these challenges, their effects, and how I resolved them in Table~\ref{tab:implementation-challenges}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Implementation challenges and solutions}
+  \label{tab:implementation-challenges}
+  \begin{tabularx}{\textwidth}{p{0.28\textwidth} p{0.32\textwidth} X}
+    \toprule
+    \textbf{Challenge} & \textbf{Effect on Project} & \textbf{My Solution / Decision}\\
+    \midrule
+    Two Flutter folders & Created confusion about which codebase was the active one. & I chose the \texttt{frontend/} directory as the main code and retired the root folder.\\
+    Inconsistent login endpoints & Web and mobile apps expected different URLs for login. & I updated the Dart and React code to use the new resource paths (\texttt{/api/auth/...}).\\
+    CORS and Network Blockers & The browser blocked React requests due to security rules. & I configured a CORS filter in Spring Boot to allow connections from the React port.\\
+    Different database models & Web dashboard was using mock arrays while backend had real API logic. & I documented the database schemas to help future developers connect the live API.\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 \section{Chapter Summary}
-\placeholder{Summarize what was implemented and identify the implementation aspects evaluated in the next chapter.}
+In this chapter, I documented the development environment and structural layout of the monorepo. I explained how the heuristic and BERT models are implemented, how Spring Boot communicates with PostgreSQL and FastAPI, and how Docker Compose packages the services. I also listed the integration challenges I faced and how I solved them. In the next chapter, I will cover the testing and results of the system.

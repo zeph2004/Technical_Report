@@ -1,16 +1,57 @@
 \chapter{Code and Configuration Evidence}
 \label{app:code}
 
-\section{Additional Code Excerpts}
-\placeholder{Insert short, meaningful, anonymized code excerpts only. Each excerpt should have a caption and explanation. Do not include entire source files.}
+\section{Docker Compose Configuration}
+During my practical training, I used Docker Compose to orchestrate and run the multi-service backend environment on my local machine. The Docker Compose configuration file defined the network, ports, database environment variables, and persistent storage paths needed for our system to function correctly.
 
-\section{Configuration Details}
-\placeholder{Document reproducibility-relevant configuration without exposing credentials, tokens, private endpoints, or sensitive data.}
+A sanitized and annotated representation of the \texttt{docker-compose.yml} configuration is shown in Listing~\ref{lst:docker-compose}.
 
-\section{Command-Line Output}
-\begin{lstlisting}[caption={Placeholder for sanitized command-line output},label={lst:command-output}]
-[INSERT SANITIZED COMMAND-LINE OUTPUT]
+\begin{lstlisting}[language=SQL,caption={Sanitized representation of the Docker Compose configuration},label={lst:docker-compose}]
+version: '3.8'
+
+services:
+  # Relational database for storing scan history and credentials
+  database:
+    image: postgres:15-alpine
+    container_name: argus-database
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_DB: sms_fraud
+      POSTGRES_USER: dev_user
+      POSTGRES_PASSWORD: dev_password
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  # Python FastAPI machine learning sequence classifier
+  ml-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.ml
+    container_name: argus-ml-service
+    ports:
+      - "8000:8000"
+    environment:
+      - MODEL_DIR=./final_model
+
+  # Spring Boot REST API orchestrator and gatekeeper
+  backend-api:
+    build:
+      context: ./backend
+    container_name: argus-backend-api
+    ports:
+      - "8080:8080"
+    depends_on:
+      - database
+      - ml-service
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://database:5432/sms_fraud
+      - SPRING_DATASOURCE_USERNAME=dev_user
+      - SPRING_DATASOURCE_PASSWORD=dev_password
+      - ML_SERVICE_URL=http://ml-service:8000
+
+volumes:
+  pgdata:
 \end{lstlisting}
 
-\section{Other Supporting Material}
-\placeholder{Add other evidence required by the university or useful for reviewing the implementation.}
+This setup allows a single command (\texttt{docker-compose up}) to build and run all our core microservices, setting up isolated and connected local environments for database, API, and machine learning operations.

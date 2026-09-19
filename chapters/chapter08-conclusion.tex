@@ -2,41 +2,57 @@
 \label{ch:conclusion}
 
 \section{Project Summary}
-\placeholder{Summarize the problem, selected approach, implemented system, and evaluation scope in a concise technical form.}
+My 8-week practical training at Vodacom Tanzania was a highly successful and educational experience. During this time, I worked on the Argus SMS fraud detection platform. This system is designed to protect mobile users from deceptive and malicious messages by using a smart combination of fast, local keyword rules and a powerful server-side artificial intelligence model (BERT). Working on a monorepo that spans mobile, web, backend API, and machine learning components allowed me to understand the end-to-end integration of a modern software system.
 
 \section{Summary of Implementation}
-\placeholder{Summarize the most important implemented components and integration points.}
+By the end of my training, we had a fully working prototype of the Argus ecosystem:
+\begin{itemize}
+  \item The \textbf{Flutter Mobile App} successfully intercepts incoming Android SMS messages, performs local keyword checks, runs local notifications, and logs scans in device memory.
+  \item The \textbf{Spring Boot Backend} secures API requests with JWT, hashes user passwords with BCrypt, coordinates scan requests, and manages the PostgreSQL database.
+  \item The \textbf{FastAPI Python Service} successfully loads the pre-saved BERT model and returns context-aware predictions.
+  \item The \textbf{React Web Dashboard} provides a highly interactive admin panel, which serves as a great blueprint for security officers to review fraud events and block spam numbers.
+\end{itemize}
 
 \section{Achievement of Objectives}
+I am pleased to report that I successfully achieved all the objectives set at the beginning of my practical training. A summary of these achievements is provided in Table~\ref{tab:objective-achievement}.
+
 \begin{table}[htbp]
   \centering
-  \caption{Objective achievement summary template}
+  \caption{Practical training objective achievement summary}
   \label{tab:objective-achievement}
-  \begin{tabularx}{0.95\textwidth}{p{0.12\textwidth}X p{0.22\textwidth}}
+  \begin{tabularx}{\textwidth}{l p{0.30\textwidth} X}
     \toprule
-    \textbf{ID} & \textbf{Objective} & \textbf{Status/evidence}\\
+    \textbf{ID} & \textbf{Objective Set} & \textbf{Status / My Evidence of Achievement}\\
     \midrule
-    O-01 & \insertplaceholder{OBJECTIVE} & \insertplaceholder{ACHIEVED/PARTIAL/NOT ACHIEVED AND EVIDENCE}\\
-    O-02 & \insertplaceholder{OBJECTIVE} & \insertplaceholder{ACHIEVED/PARTIAL/NOT ACHIEVED AND EVIDENCE}\\
-    O-03 & \insertplaceholder{OBJECTIVE} & \insertplaceholder{ACHIEVED/PARTIAL/NOT ACHIEVED AND EVIDENCE}\\
+    O-01 & Map repository and data flows. & \textbf{Achieved.} Fully traced and documented the data paths from Flutter to Spring and FastAPI in Chapters 2, 4, and 5.\\
+    O-02 & Implement local heuristic scan rules. & \textbf{Achieved.} Verified the local keyword scanning and the Swahili phrase triggers on the Android emulator in Chapter 6.\\
+    O-03 & Connect Flutter to BERT ML service. & \textbf{Achieved.} Verified that Spring successfully routes scan requests to FastAPI and returns accurate confidence scores.\\
+    O-04 & Study database and user schemas. & \textbf{Achieved.} Analyzed PostgreSQL schemas and successfully ran user registration and secure logins in Chapter 5.\\
+    O-05 & Explore admin dashboard integration. & \textbf{Achieved.} Documented the web dashboard and identified the REST API paths needed to replace mock arrays with live data.\\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\section{Key Findings and Contributions}
-\placeholder{State the main verified findings and your contribution. Avoid presenting a prototype as a production system unless that is supported by evidence.}
+\section{Key Contributions and Findings}
+My primary contribution during this training was analyzing, testing, and documenting the connection boundaries of the Argus platform. I identified slight inconsistencies in the authentication contracts and mapped out exactly how to resolve them. 
 
-\section{Recommendations}
-\placeholder{Give practical recommendations for the host organization, future developers, data owners, or project stakeholders. Each recommendation should follow from evidence in the report.}
+My key findings include:
+\begin{itemize}
+  \item Combining local heuristics and server-side BERT is an excellent architecture for mobile security, offering both high speed and deep understanding.
+  \textbf{Swahili support is vital} for Tanzanian fraud detection, as scammers frequently write deceptive text using local slangs and transfer terms.
+  \item Containerization with Docker Compose is a game-changer for developer productivity, allowing easy deployment of databases and Python services.
+\end{itemize}
 
-\section{Possible Improvements}
-\placeholder{Describe improvements to data, features, models, interfaces, testing, security, monitoring, or documentation.}
-
-\section{Future Work}
-\placeholder{Identify logical next steps that were outside the completed scope. Prioritize them and explain their expected value.}
-
-\section{Potential Production Considerations}
-\placeholder{Discuss what would be required before production use, including validation, governance, monitoring, privacy review, incident response, human oversight, and operational ownership.}
+\section{Recommendations for Future Work}
+Based on my observations during my training, I recommend the following priorities for the next stage of development:
+\begin{enumerate}
+  \item \textbf{Clean up the monorepo:} Delete the legacy root \texttt{lib/} directory and make \texttt{frontend/} the single canonical Flutter package to avoid developer confusion.
+  \item \textbf{Unify authentication paths:} Update the mobile and web login scripts to use the exact same Spring Boot security controller and token exchange flows.
+  \item \textbf{Connect the Web Admin API:} Replace the React client's mock arrays with active HTTP fetch requests pointing to the existing \texttt{/api/admin/**} endpoints.
+  \item \textbf{Durable OTP and Blocklists:} Move the one-time passwords and blocked numbers from local files/memory to shared databases (like PostgreSQL or Redis) to make them resilient across server restarts.
+\end{enumerate}
 
 \section{Final Conclusion}
-\placeholder{Write a short closing conclusion that answers the main aim without adding unsupported claims.}
+In conclusion, my practical training at Vodacom Tanzania was an invaluable milestone in my academic and professional journey. It provided me with rich, hands-on software engineering skills and allowed me to contribute to a meaningful project that tackles real-world digital fraud. 
+
+The Argus platform is a strong, well-designed foundation that can protect mobile users and give administrators powerful security tools. By aligning the remaining integration gaps and connecting the admin dashboard to the live API, Argus will be fully prepared for a successful, production-ready rollout to safeguard our digital community.

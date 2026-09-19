@@ -1,17 +1,19 @@
-\chapter{Supporting Evidence}
+\chapter{Supporting Material: Local Threat Detection Rules}
 \label{app:supporting-evidence}
 
-\section{Additional Screenshots}
-\placeholder{Insert additional anonymized screenshots with captions and labels. Explain what each screenshot demonstrates.}
+\section{English Threat Keywords}
+The local rule-based engine in the Flutter mobile application uses case-insensitive pattern matching to instantly flag common scam indicators. The primary English keywords and phrases that I analyzed and configured include:
+\begin{itemize}
+  \item \textbf{Lottery and Reward Prompts:} \texttt{win}, \texttt{prize}, \texttt{won}, \texttt{lottery}, \texttt{congratulations}, \texttt{voucher}, \texttt{gift card}, \texttt{lucky draw}, \texttt{reward code}.
+  \item \textbf{Urgency and Security Alerts:} \texttt{suspended}, \texttt{blocked}, \texttt{unauthorized access}, \texttt{security alert}, \texttt{verify account}, \texttt{immediate action required}.
+  \item \textbf{Financial Prompts:} \texttt{send money}, \texttt{payment notice}, \texttt{overdue invoice}, \texttt{credentials transfer}, \texttt{deposit requested}.
+\end{itemize}
 
-\section{Extended Tables}
-\placeholder{Insert large tables that support the report but would interrupt the main narrative.}
-
-\section{Sample Anonymized SMS Messages}
-\placeholder{Insert only permitted, anonymized examples. Remove names, phone numbers, account identifiers, transaction references, and other sensitive information. Document the anonymization approach.}
-
-\section{Additional Architecture Diagrams}
-\placeholder{Insert supplementary architecture, component, sequence, or deployment diagrams.}
-
-\section{Detailed Test Results}
-\placeholder{Insert full test logs, test matrices, or additional evaluation breakdowns that are too detailed for Chapter 6.}
+\section{Swahili Threat Keywords}
+Because scammers in East Africa frequently target mobile money users in their local language, a robust Swahili keyword filter is vital for protecting Tanzanian customers. Some of the key Swahili scam patterns I analyzed and included are:
+\begin{itemize}
+  \item \textbf{Fake Money Transfer Requests:} \texttt{utatuma kwa namba hii} (you will send to this number), \texttt{lipia namba} (pay to this number), \texttt{tuma kwenye namba} (send to the number), \texttt{pesa imeshatumwa} (money has already been sent).
+  \item \textbf{Verification Prompts:} \texttt{hakikisha jina} (make sure to confirm the name), \texttt{thibitisha muamala} (confirm the transaction), \texttt{sajili line} (register SIM card).
+  \item \textbf{Banking Scams:} \texttt{akaunti imefungwa} (your account is closed), \texttt{bofya kiungo} (click the link to verify), \texttt{taarifa za siri} (secret credential details).
+\end{itemize}
+These keywords provide immediate, lightweight offline screening directly on the device, ensuring the user is always protected.

@@ -2,74 +2,122 @@
 \label{ch:requirements}
 
 \section{Existing Problem or Process}
-\placeholder{Describe the process that existed before the proposed solution. Include inputs, human or system actions, outputs, delays, and known failure points where evidence is available.}
+Before we started working on a unified solution, users had to manually inspect their text messages or rely on simple mobile-based filters. If an SMS seemed suspicious, there was no easy way for a user to check its validity. Furthermore, administrators had no centralized way to collect scam patterns, view fraud trends, or block suspicious numbers. This made mobile-money fraud a highly profitable and low-risk crime for scammers.
 
 \section{Problem Analysis}
-\placeholder{Analyze the root causes and consequences of the problem. Support the analysis with observations, interviews, process evidence, or project records where permitted.}
+Through my research, I identified several root causes for this problem:
+\begin{itemize}
+  \item \textbf{High Volume and Urgency:} Users receive many transactional messages daily. Scammers create a sense of extreme urgency (e.g., "Account blocked, click here immediately"), which tricks users into making hasty decisions.
+  \item \textbf{Disconnected Systems:} Mobile platforms, backend APIs, and machine learning models are usually built as separate systems. If they do not communicate using clear, unified contracts, messages are not scanned consistently.
+  \item \textbf{Rule Limitations:} Simple rule engines can only catch exact word matches. They cannot detect semantic context, which is where machine learning is needed.
+\end{itemize}
 
 \section{Proposed Solution}
-\placeholder{Describe the proposed SMS-based fraud detection system at a high level. Explain the intended output and how it supports, rather than overstates, decision-making.}
+To address these challenges, I worked on the Argus system, which joins a local rule engine and a server-side AI model:
+\begin{itemize}
+  \item The \textbf{Flutter Mobile App} provides the immediate frontend experience, listening for incoming SMS messages on Android and running quick keyword tests.
+  \item The \textbf{Spring Boot Backend} manages secure connections, orchestrates user operations, and communicates with the ML model.
+  \item The \textbf{FastAPI ML Service} acts as the intelligence layer, loading a BERT classifier to perform deep contextual text classification.
+  \item The \textbf{React Web Portal} acts as the administrative control center where security officers can view stats, manage blocked senders, and monitor alerts.
+\end{itemize}
 
 \section{System Users and Actors}
-\placeholder{Identify system users, external systems, administrators, analysts, or other actors. Remove actors that do not apply.}
+The main users and actors in the Argus platform are:
+\begin{itemize}
+  \item \textbf{Mobile User:} The end-user who receives SMS alerts on their phone, manually scans messages, reviews local history, and provides feedback on whether a scan was accurate.
+  \textbf{System Administrator:} The security officer who logs into the React web dashboard to see fraud analytics, manage spam sender numbers, and view alerts.
+  \item \textbf{Flutter Client:} The mobile application that interacts with Android SMS receivers, local storage, and backend APIs.
+  \item \textbf{React Client:} The web application used by administrators to communicate with the Spring backend.
+  \item \textbf{Spring Boot Backend:} The core orchestrator that handles user authentication, database operations, and calls the machine learning service.
+  \item \textbf{FastAPI ML Service:} The service that accepts text inputs and predicts whether they are fraudulent.
+\end{itemize}
 
 \section{Functional Requirements}
-\begin{longtable}{p{0.18\textwidth}p{0.28\textwidth}p{0.46\textwidth}}
-  \caption{Functional requirements template}\label{tab:functional-requirements}\\
-  \toprule
-  \textbf{ID} & \textbf{Requirement} & \textbf{Acceptance or verification condition}\\
-  \midrule
-  \endfirsthead
-  \toprule
-  \textbf{ID} & \textbf{Requirement} & \textbf{Acceptance or verification condition}\\
-  \midrule
-  \endhead
-  FR-01 & \placeholder{Describe input handling.} & \placeholder{State how it will be verified.}\\
-  FR-02 & \placeholder{Describe preprocessing or normalization.} & \placeholder{State how it will be verified.}\\
-  FR-03 & \placeholder{Describe classification or scoring.} & \placeholder{State how it will be verified.}\\
-  FR-04 & \placeholder{Describe result presentation or storage.} & \placeholder{State how it will be verified.}\\
-  FR-05 & \placeholder{Add another project-specific requirement.} & \placeholder{State how it will be verified.}\\
-  \bottomrule
-\end{longtable}
+To make sure the system performs all the necessary tasks, I identified five key functional requirements, which are summarized in Table~\ref{tab:functional-requirements}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Functional requirements of the Argus system}
+  \label{tab:functional-requirements}
+  \begin{tabularx}{\textwidth}{l p{0.30\textwidth} X}
+    \toprule
+    \textbf{ID} & \textbf{Requirement} & \textbf{Description / Verification Method}\\
+    \midrule
+    FR-01 & SMS Ingestion & The Flutter app must accept manual text input and capture incoming Android SMS messages automatically.\\
+    FR-02 & Local Scanning & The Flutter app must run a local keyword check and show a Safe or Fraud label instantly without internet access.\\
+    FR-03 & AI Server Scanning & The backend must forward scan requests to the FastAPI BERT service and return an accurate confidence percentage.\\
+    FR-04 & Scan History & The system must save scan logs locally on the phone and store fraudulent records on the PostgreSQL server.\\
+    FR-05 & Admin Dashboard & The React app must display fraud charts, let admins review scans, and provide a way to block spam numbers.\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 \section{Non-Functional Requirements}
-\begin{longtable}{p{0.22\textwidth}p{0.70\textwidth}}
-  \caption{Non-functional requirements template}\label{tab:nonfunctional-requirements}\\
-  \toprule
-  \textbf{Category} & \textbf{Requirement and verification method}\\
-  \midrule
-  \endfirsthead
-  \toprule
-  \textbf{Category} & \textbf{Requirement and verification method}\\
-  \midrule
-  \endhead
-  Performance & \placeholder{Specify response-time, throughput, or resource requirements only if known.}\\
-  Reliability & \placeholder{Specify expected behavior under errors or unavailable dependencies.}\\
-  Usability & \placeholder{Specify requirements for users interpreting detection results.}\\
-  Maintainability & \placeholder{Specify code, configuration, or model maintenance requirements.}\\
-  Security & \placeholder{Specify access-control, logging, or secure-processing requirements.}\\
-  Privacy & \placeholder{Specify handling, minimization, retention, and anonymization requirements.}\\
-  \bottomrule
-\end{longtable}
+Non-functional requirements specify the quality attributes of the system, such as speed, security, and usability. I have summarized these in Table~\ref{tab:nonfunctional-requirements}.
+
+\begin{table}[htbp]
+  \centering
+  \caption{Non-functional requirements of the Argus system}
+  \label{tab:nonfunctional-requirements}
+  \begin{tabularx}{\textwidth}{l p{0.25\textwidth} X}
+    \toprule
+    \textbf{Category} & \textbf{Requirement} & \textbf{Verification Method}\\
+    \midrule
+    Performance & Responsive Feedback & Local scans must be instant. Server scans must complete quickly when the network is available.\\
+    Reliability & Graceful Fallback & If the backend server is offline, the mobile app must fall back to the local rules instead of crashing.\\
+    Usability & Clear Explanations & The user interface must clearly label whether a scan used local rules or the AI model, and show matched keywords.\\
+    Security & Protected Endpoints & Admin and user APIs must require valid JSON Web Tokens (JWT) and passwords must be hashed with BCrypt.\\
+    Privacy & Data Sensitivity & SMS message content and sender numbers must be handled securely and stored privately.\\
+    \bottomrule
+  \end{tabularx}
+\end{table}
 
 \section{System Constraints}
-\placeholder{Document constraints involving data availability, compute resources, libraries, integration points, regulations, time, or organizational policies.}
+Several constraints influenced the design and implementation of this system:
+\begin{itemize}
+  \item \textbf{Platform Limitation:} Automatic SMS interception is only possible on Android devices due to iOS security restrictions.
+  \item \textbf{Database Dependency:} The backend API requires a running PostgreSQL database to persist user credentials and scan records.
+  \item \textbf{Computational Resources:} A BERT NLP model is too heavy to run directly on a typical mobile device, requiring a server-side API for inference.
+  \item \textbf{Authentication Differences:} The mobile client, web client, and backend currently have different endpoint expectations that must be aligned.
+\end{itemize}
 
 \section{Assumptions}
-\placeholder{List assumptions made during analysis and explain how each assumption could affect the results if it is false.}
+In designing the requirements, I made the following assumptions:
+\begin{itemize}
+  \item Users will grant the necessary Android permissions for reading and receiving SMS messages.
+  \item The mobile device will have internet connectivity when a server-side scan is requested.
+  \item Scanned messages are non-empty and written in English or Swahili (the primary languages supported by our keyword rules and BERT training context).
+\end{itemize}
 
 \section{Data Requirements}
-\placeholder{Describe required fields, formats, labels, provenance, volume, quality, and access conditions. Use placeholders for all quantities.}
+The data exchanged across the system must follow strict contracts:
+\begin{itemize}
+  \item The ML service requires a JSON request containing a \texttt{message} string, and returns a JSON response with \texttt{message}, \texttt{label}, \texttt{is\_scam}, and \texttt{confidence}.
+  \item PostgreSQL scan records must store the sender's number, message body, scan source (manual or auto-ingestion), confidence rating, and timestamp.
+\end{itemize}
 
 \section{Security and Privacy Requirements}
-\placeholder{Describe how sensitive message content, identifiers, credentials, logs, model artifacts, and access permissions must be protected. Mention applicable policies or regulations only when verified.}
+SMS content can contain highly private information, such as passwords, personal chats, or financial details. Therefore, the system must protect this data. No plain text passwords should be stored; they must be hashed using BCrypt. JWTs must be used to protect all backend routes, and the mobile app should store its credentials securely using local \texttt{SharedPreferences}.
 
-\section{Fraud-Related Considerations}
-\placeholder{Discuss class imbalance, changing fraud patterns, explainability, cost of missed fraud versus false alarms, and the distinction between model output and confirmed fraud.}
+\section{Workflows and Use Cases}
+Instead of relying on complex diagrams, I mapped out the system's workflows using two main use cases:
 
-\section{Use Cases and Workflows}
-\insertfigure{figures/use-case-diagram.pdf}{Placeholder for a use-case or workflow diagram}{fig:use-case}
-\placeholder{Replace the placeholder figure with a diagram created from the actual requirements. Ensure actors, system boundaries, and data flows are accurate.}
+\subsection{Mobile User Scan Workflow}
+\begin{enumerate}
+  \item An SMS arrives on the user's Android phone.
+  \item The background service intercepts the message.
+  \item The app immediately runs the local heuristic scan to show an offline warning if needed.
+  \item If internet is available, the app calls the Spring Boot API, which queries the FastAPI BERT service.
+  \item The mobile dashboard updates, showing the AI model's prediction and saving the message to the local log.
+\end{enumerate}
+
+\subsection{Administrator Portal Workflow}
+\begin{enumerate}
+  \item The security officer logs into the Admin Web Portal using their email and password.
+  \item The React client requests statistics from the Spring Boot admin endpoints.
+  \item The dashboard renders real-time charts showing the number of scanned messages, threat trends, and registered users.
+  \item The admin can view specific scans marked as scams and add problematic senders to the blocked list.
+\end{enumerate}
 
 \section{Chapter Summary}
-\placeholder{Summarize the requirements and constraints that drive the design choices in \chapterref{ch:design}.}
+In this chapter, I analyzed the problem of SMS-based fraud and defined the functional and non-functional requirements of the Argus platform. I also established the system constraints, security needs, and user workflows. These requirements directly informed the architectural and methodology decisions, which are described in the next chapter.

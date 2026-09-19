@@ -2,71 +2,90 @@
 \label{ch:design}
 
 \section{Overall System Architecture}
-\insertfigure{figures/system-architecture.pdf}{Placeholder for the system architecture}{fig:architecture}
-\placeholder{Describe the architecture shown in \figureref{fig:architecture}, including data sources, processing stages, model services, interfaces, storage, and outputs.}
+The Argus system is built using a modern, multi-tier software architecture that separates the frontend user interfaces from the backend logic and the artificial intelligence services. This structure makes sure that each part is lightweight and can run in its own environment.
+
+The architecture is composed of four main layers:
+\begin{enumerate}
+  \item \textbf{Presentation Layer (Frontend):} This includes the Flutter mobile application (for on-device scanning) and the React web dashboard (for administrators).
+  \item \textbf{API Gateway \& Orchestration Layer (Backend):} The Spring Boot application serves as the central API, managing security, user accounts, and connecting the frontends to other resources.
+  \item \textbf{Intelligence Layer (Machine Learning):} The Python FastAPI service loads a fine-tuned BERT model to analyze message text.
+  \item \textbf{Storage Layer (Database):} PostgreSQL stores administrative data, user credentials, and logged fraud records, managed securely via Flyway.
+\end{enumerate}
+
+By using this modular approach, I was able to study each service independently and understand how they work together as a single ecosystem.
 
 \section{System Components}
-\placeholder{Describe each component and its responsibility. Link each component to the requirements in \chapterref{ch:requirements}.}
+During my training, I analyzed the codebases of each major component in the monorepo:
+\begin{itemize}
+  \item \textbf{Flutter Client (Argus/Secure Signal):} Handles user authentication screens, manual SMS input fields, the background Android SMS listener, and local history storage.
+  \item \textbf{React Admin Client:} Built as a dashboard for security officers to review logged fraud records, see alerts, and modify blocked phone numbers.
+  \item \textbf{Spring Boot API:} Implements JWT verification, password hashing, admin endpoints, and orchestrates calls to the FastAPI server.
+  \item \textbf{FastAPI ML Service:} A lightweight Python server that accepts message text, passes it to the BERT model, and returns a scam prediction.
+\end{itemize}
 
-\section{Data Flow}
-\insertfigure{figures/data-flow.pdf}{Placeholder for the data-flow diagram}{fig:data-flow}
-\placeholder{Explain how SMS data moves through ingestion, preprocessing, feature extraction, classification, result handling, and any feedback or monitoring loop.}
+\section{Data Flow of a Scan Request}
+The path a message takes from the phone to the server is straightforward and follows these steps:
+\begin{enumerate}
+  \item \textbf{Trigger:} A message is entered manually in the Flutter app or intercepted by the Android background listener.
+  \item \textbf{Local Check:} The mobile app runs a fast keyword-matching check to provide immediate on-screen warnings.
+  \item \textbf{Server API Call:} If connected to the internet, the app makes an HTTP POST request to the Spring Boot endpoint \texttt{/api/scans}.
+  \item \textbf{ML Prediction:} The Spring Boot backend forwards the message body to the FastAPI \texttt{/predict} service.
+  \item \textbf{Classification:} FastAPI tokenizes the text, runs it through the BERT classifier, and returns a JSON payload containing the label (scam or trust) and a confidence score.
+  \item \textbf{Persistence:} If the message is classified as a scam, Spring Boot saves a copy of the record in the PostgreSQL database for the admin dashboard. Safe messages are not saved on the server to protect user privacy.
+  \item \textbf{UI Update:} The mobile app displays the final verdict (Safe or Fraud) to the user.
+\end{enumerate}
 
-\section{Data Acquisition}
-\placeholder{Describe how data was obtained, authorized, transferred, stored, and anonymized. Insert real source and volume details only after verification.}
+\section{Data Acquisition and Sources}
+To build and test the system, we used a combination of mock datasets and real-world message patterns. The local rule engine was seeded with standard SMS templates commonly used by scammers in East Africa, particularly those targeting mobile-money transfer systems. The Python ML service loads a fine-tuned BERT model, which was trained on public datasets of spam and scam text messages.
 
-\section{Data Cleaning and Preprocessing}
-\placeholder{Document normalization, duplicate handling, missing values, encoding, language handling, removal or masking of sensitive fields, and any rules for preserving transaction meaning.}
+\section{Data Preprocessing and Swahili Support}
+Before message text is analyzed, it must be cleaned and formatted:
+\begin{itemize}
+  \item \textbf{Heuristic Preprocessing:} The Flutter app converts the message body to lowercase and removes punctuation. It then scans for specific scam keywords, such as Swahili transfer phrases like "utatuma kwa namba" (you will send to this number) or "hakikisha jina" (confirm the name), which are extremely common in Tanzanian SMS fraud.
+  \item \textbf{BERT Preprocessing:} The FastAPI service checks if the message is empty. If it is valid, the BERT tokenizer splits the text into tokens (sub-words), truncates long messages to a maximum length of 128 characters, and converts them into numerical tensors for the deep learning model.
+\end{itemize}
 
-\section{Data Labeling}
-\placeholder{Explain who or what assigned labels, the label definitions, quality checks, disagreements, and any limitations in the ground truth.}
+\section{Data Labeling and Result Mapping}
+The core task is to classify an incoming message into one of two labels:
+\begin{itemize}
+  \item \texttt{scam}: This represents a fraudulent or dangerous message. The mobile app displays this as a red \textbf{Fraud} alert with warning tips.
+  \item \texttt{trust}: This represents a normal, safe message. The mobile app displays this as a green \textbf{Safe} notification.
+\end{itemize}
+The ML service also provides a confidence percentage (between 0.0 and 1.0) indicating how sure the model is of its prediction.
 
-\section{Feature Extraction and Text Representation}
-\placeholder{Describe the representation used, such as token counts, n-grams, embeddings, structured fields, or hybrid features. Explain why it was selected.}
+\section{NLP and Machine Learning Methodology}
+The machine learning component uses **BERT (Bidirectional Encoder Representations from Transformers)**. BERT is a state-of-the-art model for Natural Language Processing developed by Google. Unlike older methods that read words one by one, BERT reads the entire sentence in both directions to understand the context. This is highly effective because scammers often use normal-looking words but in a suspicious context (e.g., combining bank names with personal telephone numbers).
 
-\section{NLP Methodology}
-\placeholder{Describe the NLP steps that were actually used. Avoid listing techniques that were only considered unless they are clearly identified as alternatives.}
-
-\section{Machine Learning Methodology}
-\placeholder{Describe the learning task, target labels, training procedure, split strategy, imbalance handling, thresholding, and reproducibility controls.}
-
-\section{Model Selection}
-\placeholder{List candidate models considered, selection criteria, baseline choice, and reasons for the final selection.}
-
-\section{Training and Validation Methodology}
-\placeholder{Describe how training, validation, and test data were separated; how leakage was prevented; and how hyperparameters or thresholds were chosen.}
-
-\section{Detection and Classification Workflow}
-\insertfigure{figures/processing-pipeline.pdf}{Placeholder for the processing pipeline}{fig:pipeline}
-\placeholder{Walk through one message from input to output. Identify where confidence, risk score, class label, explanation, or human review enters the workflow.}
+For mobile devices, running a full BERT model is impossible because it requires a lot of memory and processing power. Therefore, we keep the model on a central server (using FastAPI) and access it via REST API calls from the mobile device. This is a standard design pattern in modern software engineering.
 
 \section{Technology Stack}
+The complete technologies, tools, and libraries used to implement the Argus platform are summarized in Table~\ref{tab:technology-stack}.
+
 \begin{table}[htbp]
   \centering
-  \caption{Technology stack template}
+  \caption{Technology stack of the Argus system}
   \label{tab:technology-stack}
-  \begin{tabularx}{0.95\textwidth}{p{0.25\textwidth}p{0.30\textwidth}X}
+  \begin{tabularx}{\textwidth}{p{0.25\textwidth} p{0.30\textwidth} X}
     \toprule
-    \textbf{Layer} & \textbf{Technology/tool} & \textbf{Purpose and version, if relevant}\\
+    \textbf{Layer} & \textbf{Technology/Tool} & \textbf{Purpose}\\
     \midrule
-    Data processing & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
-    NLP/feature extraction & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
-    Model training & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
-    Application/API & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
-    Storage & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
-    Testing/monitoring & \insertplaceholder{TECHNOLOGY} & \insertplaceholder{PURPOSE}\\
+    Mobile App & Flutter, Dart & Builds the cross-platform Android mobile app, handles local background SMS listening and local SQLite storage.\\
+    Admin Web App & React, TypeScript, Vite & Builds the interactive administrator dashboard and login screens.\\
+    Backend API & Java 21, Spring Boot & Handles JWT authentication, business logic, email notifications, and PostgreSQL database migrations.\\
+    AI & Python, FastAPI, HuggingFace & Runs the lightweight web server and tokenizes/predicts text using the BERT model.\\
+    Database & PostgreSQL, Flyway & Stores relational tables for users, roles, and scam logs with version-controlled migrations.\\
+    Development & Docker, Docker Compose & Package all services into containers so they can be run easily on any local computer.\\
     \bottomrule
   \end{tabularx}
 \end{table}
 
-\section{Development Methodology}
-\placeholder{Describe the development process used, such as iterative development, Agile/Scrum, or another approach. Include only ceremonies, iterations, roles, and artifacts that actually applied.}
-
-\section{Design Decisions and Justification}
-\placeholder{Discuss important decisions and alternatives. For each decision, explain the technical, operational, security, privacy, or maintainability trade-off.}
-
-\section{Security, Privacy, and Data Protection by Design}
-\placeholder{Explain controls built into the design, including minimization, anonymization, access control, secure storage, secrets handling, auditability, and protection against misuse.}
+\section{Design Decisions and Justifications}
+During my study of the project, I noted several important technical trade-offs that were made:
+\begin{itemize}
+  \item \textbf{Local vs. Server Processing:} The system uses local rules for offline speed, and server-side BERT for accuracy. This ensures that the user is always protected, even when they do not have internet connection.
+  \item \textbf{Fraud-Only Server Persistence:} Saving only fraudulent scans on the backend saves storage space and protects customer privacy, as normal, personal messages are never recorded on the server.
+  \item \textbf{Docker Containers:} Using Docker Compose allows us to run the database, backend, and machine learning service with a single command, making deployment and local testing incredibly easy.
+\end{itemize}
 
 \section{Chapter Summary}
-\placeholder{Summarize the design and methodology before presenting implementation details.}
+In this chapter, I explained the overall architecture and data flows of the Argus SMS fraud detection platform. I detailed how we combine local keyword scanning with advanced server-side BERT models to balance speed and intelligence. Finally, I summarized the technology stack and highlighted the main engineering decisions behind the system. In the next chapter, I will dive deep into the actual implementation and code of the platform.

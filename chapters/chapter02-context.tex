@@ -2,25 +2,38 @@
 \label{ch:context}
 
 \section{Host Organization}
-\placeholder{Provide a brief, relevant description of the host organization, its sector, and the part of its work connected to this project. Do not include an extended company history.}
+I completed my practical training at Vodacom Tanzania, which is one of the leading telecommunications and mobile money providers in Tanzania. Vodacom offers voice, data, and mobile financial services (such as M-Pesa) to millions of customers. Because Vodacom's platform is widely used for financial transactions, protecting customers from digital scams and fraudulent SMS messages is a major priority. This provides an excellent real-world context for my training, as the system I worked on aims directly at safeguarding users in this ecosystem.
 
-\section{Relevant Department or Team}
-\placeholder{Describe the department/team, its responsibilities, and how it interacted with the project.}
+\section{Relevant Department and Team}
+I was placed within the Software Engineering department. The department is responsible for developing, integrating, and maintaining software applications that support Vodacom's business and customer operations. Working with this team allowed me to observe how professional software developers write code, manage repositories, configure server environments, and handle user security. This environment was highly educational, as it exposed me to modern tools like Docker, Git, Spring Boot, and Flutter.
 
 \section{Technical and Business Environment}
-\placeholder{Describe the systems, workflows, users, or operational constraints relevant to SMS transaction analysis. Replace with verified facts.}
+The technical environment of the Argus system is divided into two primary user experiences designed to solve distinct business needs:
+\begin{itemize}
+  \item \textbf{Consumer Mobile Application:} Built using Flutter, this app runs on the user's Android phone. Its business purpose is to keep users safe by checking incoming text messages and warning them immediately if a message looks like a scam.
+  \item \textbf{Administrator Web Portal:} Built using React and TypeScript, this dashboard is designed for security officers. It lets them view fraud statistics, see real-time alerts, review scan histories, and block spam phone numbers.
+\end{itemize}
+These clients are supported by a Spring Boot backend API for user security and data storage, and a FastAPI machine learning service that runs a BERT model for text classification.
 
 \section{Problem Domain}
-\placeholder{Define the fraud-detection problem in the specific context of the project. Distinguish between a suspicious message, a suspicious transaction, and a confirmed fraudulent event if these concepts differ in your system.}
+The main focus of the project is classifying SMS text messages into two simple categories: \texttt{scam} (fraudulent messages) or \texttt{trust} (safe messages). 
+A message is considered suspicious if it contains patterns commonly used by scammers, such as urgent demands for money, fake prize announcements, or links to phishing websites. During my training, I learned that a critical part of fraud detection is analyzing these patterns. However, neither a local keyword check nor a server-side AI model is a 100\% perfect proof of fraud; rather, they serve as a powerful warning system that helps users flag suspicious messages before falling victim to scams.
 
 \section{Transaction Information in SMS Messages}
-\placeholder{Describe the kinds of information present in the project messages, such as transaction references, amounts, dates, merchants, balances, or sender identifiers. Do not reproduce sensitive data; use anonymized examples in an appendix.}
+In Tanzania, many mobile-money transactions are coordinated using SMS notifications. For example, when a user sends or receives money through M-Pesa, they receive a standard confirmation SMS containing details like transaction amounts, agent names, and reference codes. Scammers often exploit this by sending fake SMS notifications that look almost identical to real transaction messages. 
+The Argus system is specifically designed to analyze these messages. It checks details like the sender's identifier, transfer instructions, and Swahili keywords that scammers use to trick users into believing a transaction has occurred.
 
 \section{Relevant Technical Concepts}
-\placeholder{Introduce only the concepts needed to understand the implementation, such as text normalization, tokenization, vectorization, supervised classification, anomaly detection, class imbalance, or threshold selection. Cite sources where appropriate.}
+During my training, I had to learn several key concepts to understand how Argus works:
+\begin{itemize}
+  \item \textbf{Rule-Based Detection (Heuristics):} This uses simple, fast keyword matching locally on the mobile phone. If a message contains words like "Congratulations", "You won", or Swahili scam phrases like "utatuma kwa namba hii" (send to this number), the app marks it as suspicious. This is very fast and works offline.
+  \item \textbf{Machine Learning (AI):} This uses a pre-trained BERT (Bidirectional Encoder Representations from Transformers) model on a server. BERT is a deep-learning model designed for Natural Language Processing (NLP). It reads the entire sentence and understands its context, which makes it much better at detecting complex scams than simple keyword checks.
+\end{itemize}
+Combining these two approaches provides a great balance: fast offline protection on the phone, and deep AI-powered analysis on the server when connected.
 
 \section{Existing Approaches and Technologies}
-\placeholder{Summarize relevant approaches considered or already used in the project environment. Compare them briefly and explain why the selected approach was appropriate for the stated constraints.}
+Traditionally, mobile security systems relied only on simple, hardcoded blacklist numbers or basic keyword filters. While these are easy to build, scammers can easily bypass them by slightly changing their wording or using new phone numbers. 
+The Argus platform represents a more modern approach. By pairing a local rule engine with a server-based machine learning model, the system gets the best of both worlds. It can give instant feedback to a user even without internet access, and it can use the power of BERT to catch more sophisticated, context-dependent fraud attempts when connected to the backend API.
 
 \section{Chapter Summary}
-\placeholder{Summarize the context that directly informs the requirements and design in the next chapters.}
+Vodacom Tanzania and its Software Engineering department provided a fantastic real-world environment for my practical training. The Argus platform is designed to tackle SMS fraud in a highly transaction-heavy mobile ecosystem. It uses a combination of local rules and server-side machine learning to inspect messages, balance responsive feedback with deep analysis, and provide views for both end-users and security administrators. In the next chapter, I will describe the system requirements and use cases in detail.

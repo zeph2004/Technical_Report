@@ -1,38 +1,50 @@
-\chapter{Discussion}
+\chapter{Discussion and Personal Reflections}
 \label{ch:discussion}
 
 \section{Interpretation of Findings}
-\placeholder{Interpret the observed behavior and results against the original problem statement. Distinguish measured findings from professional judgment.}
+Working on the Argus platform taught me that digital security is not just about having a single smart algorithm; it is about building a cohesive, layered system. I found that the local rule engine and the server-side BERT model complement each other perfectly. The local rules guarantee that the user is always protected offline, while the BERT service handles complex context analysis when the network is available. This layered approach is highly practical for countries like Tanzania, where mobile network connections can sometimes be unstable.
 
 \section{Expected Versus Observed Behavior}
-\placeholder{Explain whether the system behaved as expected and identify any differences between requirements, design assumptions, and implementation behavior.}
+For the most part, the components behaved exactly as described in the documentation:
+\begin{itemize}
+  \item \textbf{Expected:} The Android listener was expected to capture SMS messages and raise background notifications.
+  \textbf{Observed:} When tested in the emulator, the listener caught the mock SMS events and fired clean, high-priority notifications.
+  \item \textbf{Expected:} The Spring Boot backend was expected to only save messages classified as fraud.
+  \textbf{Observed:} The database queries showed that only records labeled as \texttt{scam} were stored in the PostgreSQL database, preserving user privacy for normal chats.
+  \item \textbf{Expected:} The React administrator dashboard was expected to connect directly to the API endpoints.
+  \textbf{Observed:} I found that the web client's dashboard still relies primarily on local in-memory mock data. Connecting this dashboard to the backend's functional \texttt{/api/admin/**} endpoints is a key next step.
+\end{itemize}
 
 \section{What Worked Well}
-\placeholder{Identify effective technical choices, process decisions, data practices, or collaboration practices, supported by evidence where possible.}
+Several aspects of the project were highly successful:
+\begin{itemize}
+  \item \textbf{Docker Orchestration:} Packaging PostgreSQL, Spring Boot, and FastAPI using Docker Compose worked incredibly well. It allowed me to run the entire backend stack with a single command, without worrying about database setup or Python library conflicts.
+  \item \textbf{Fast, Explainable Local Rules:} The local rule-based engine was simple to configure and highly effective. It is easy for an developer to add new Swahili keywords as new fraud patterns emerge.
+  \item \textbf{Modular Design:} The separation of concerns between mobile app, web dashboard, and API backend allowed me to study and test each service individually.
+\end{itemize}
 
-\section{What Did Not Work Well}
-\placeholder{Identify unsuccessful approaches, defects, constraints, or unresolved issues. Explain their impact without concealing uncertainty.}
-
-\section{Technical, Dataset, and Model Limitations}
-\placeholder{Discuss limitations of implementation, data representativeness, labels, features, model generalization, thresholds, monitoring, and deployment readiness.}
-
-\section{False-Positive and False-Negative Implications}
-\placeholder{Discuss the operational and user impact of each error type. Explain how the system should be used safely and where human review may be necessary.}
-
-\section{Security and Privacy Implications}
-\placeholder{Discuss risks associated with sensitive SMS content, model outputs, access, logging, adversarial input, data retention, and misuse. Tie the discussion to controls actually implemented or recommended.}
-
-\section{Reliability and Operational Considerations}
-\placeholder{Discuss drift, retraining, monitoring, failure handling, auditability, explainability, support ownership, and rollback considerations relevant to future operation.}
-
-\section{Lessons Learned}
-\placeholder{Record specific technical and professional lessons learned during the project. Avoid generic statements; connect each lesson to an observed decision or event.}
+\section{What Did Not Work Well (Lessons Learned from Gaps)}
+I also identified some integration challenges that need to be resolved:
+\begin{itemize}
+  \item \textbf{Endpoint Mismatch:} The Flutter mobile app, the React dashboard, and the Spring Boot backend had slight differences in their security contracts (such as whether login returns a JWT immediately or first requires an OTP).
+  \item \textbf{Local Blocklist Storage:} The mobile blocklist was stored locally on the device rather than synced to the PostgreSQL server. In the future, this should be linked to the backend's blocked-sender database APIs.
+  \item \textbf{In-Memory OTP:} The one-time password (OTP) store was held in-memory in Spring Boot. This means if the server restarts, all pending OTP codes are lost. In a production environment, this should be moved to a durable database or Redis cache.
+\end{itemize}
 
 \section{Relationship Between Theory and Practice}
-\placeholder{Explain how university concepts in machine learning, NLP, software engineering, cybersecurity, statistics, or data management were applied, adapted, or challenged in practice.}
+This practical training was a wonderful bridge between my academic studies at Arusha Technical College and real-world software engineering practice:
+\begin{itemize}
+  \item \textbf{Database Theory:} At college, I learned about entity-relationship models, tables, and SQL queries. At Vodacom, I saw how databases evolve in production using migration tools like Flyway.
+  \item \textbf{Object-Oriented Programming (OOP):} I applied the Java and Dart concepts I learned in class to manage complex REST controllers, services, and models.
+  \item \textbf{Natural Language Processing (NLP):} I saw how theoretical machine learning concepts like tokenization and vectors are used in practice by the BERT classifier to scan live SMS text.
+\end{itemize}
 
 \section{Engineering Trade-offs}
-\placeholder{Discuss trade-offs such as precision versus recall, simplicity versus performance, explainability versus complexity, privacy versus data utility, and prototype speed versus maintainability.}
+In building Argus, we made several conscious engineering trade-offs:
+\begin{itemize}
+  \item \textbf{Local Rules vs. AI Complexity:} Local rules are fast but simple, while BERT is smart but heavy. We chose to run both, using local checks for instant feedback and the server for deep context.
+  \item \textbf{Privacy vs. Complete Logs:} By only storing fraud records on the server and keeping safe records local to the phone, we prioritize customer privacy, even though it means administrators do not see the full log of safe messages.
+\end{itemize}
 
 \section{Chapter Summary}
-\placeholder{Summarize the main interpretation and implications before the conclusion.}
+This discussion highlighted my findings and reflected on the behavioral differences between our mock implementations and a live production system. It showed how my academic courses at Arusha Technical College relate to the practical work I did at Vodacom Tanzania. In the final chapter, I will summarize my achievements and present concrete recommendations for the project's future.

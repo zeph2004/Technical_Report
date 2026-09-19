@@ -1,52 +1,71 @@
 \chapter{Introduction}
 \label{ch:introduction}
 
-\section{Background}
-\placeholder{Introduce the broader context of transaction-related SMS messages and the need to identify potentially fraudulent activity. Use only verified context and cite authoritative sources where appropriate.}
-
-In this report, the terms \gls{sms}, \gls{ml}, and \gls{nlp} should be defined and used consistently according to the terminology of the implemented project.
-
-\section{Practical Training Context}
-\placeholder{Describe the practical training setting, your role, and how the selected project fits within the training. Include only relevant organizational and technical context.}
-
-\section{Project Background}
-\placeholder{Explain how the SMS-based fraud detection project originated, what need it addressed, and your level of participation.}
+\section{Background of the Practical Training}
+Practical training is an essential part of my studies at Arusha Technical College. It helps me apply the classroom knowledge I gained during my Higher Diploma in Computer Science to a real-world professional environment. For my training, I was placed in the Software Engineering department at Vodacom Tanzania for a period of eight weeks. During this time, I worked on "Argus" (also referred to as "Secure Signal"), a mobile-first platform designed to detect and block fraudulent SMS messages using machine learning.
 
 \section{Problem Statement}
-\placeholder{State the specific problem clearly. Describe the existing difficulty, its consequences, affected users or processes, and why a technical solution was needed.}
+In Tanzania and across the globe, mobile phone users frequently receive deceptive SMS messages. These messages often mimic trusted organizations like banks or telecommunication companies, promising fake lottery prizes, asking for urgent money transfers, or trying to steal user credentials. For ordinary users, it is very difficult to manually identify which messages are legitimate and which are scams. 
+
+The goal of this project is to solve this problem by creating a mobile application that automatically scans incoming SMS messages and warns the user in real-time. By building a local rule-based filter combined with a powerful server-side artificial intelligence model (BERT), we can screen these messages and keep users safe from financial loss and data theft.
 
 \section{Motivation for Selecting the Project}
-\placeholder{Explain why this project was selected as the single substantial activity for this report. Relate the selection to its technical depth, practical value, and learning outcomes.}
+I selected this project because digital fraud is a growing challenge that affects many lives in our society. Working on Argus gave me a unique opportunity to learn and connect multiple modern technologies. I wanted to gain hands-on experience in:
+\begin{itemize}
+  \item Mobile application development using Flutter.
+  \item Creating robust backend APIs with Spring Boot.
+  \item Building interactive user interfaces using React.
+  \item Implementing natural language processing (NLP) models in Python.
+\end{itemize}
+This project represents a perfect bridge between my academic studies in computer science and the skills needed in the modern software industry.
 
-\section{Main Aim}
-\placeholder{State one measurable, project-specific aim.}
+\section{Objectives of the Project}
+The main aim of my training project was to study, develop, and integrate the different parts of the Argus SMS fraud detection system to make it fully functional and secure.
 
-\section{Specific Objectives}
+To achieve this main aim, I focused on the following specific objectives:
 \begin{enumerate}
-  \item \placeholder{Objective concerning data understanding or acquisition.}
-  \item \placeholder{Objective concerning preprocessing, feature extraction, or representation.}
-  \item \placeholder{Objective concerning model or rule-based system development.}
-  \item \placeholder{Objective concerning integration, testing, or evaluation.}
-  \item \placeholder{Objective concerning documentation, deployment, or recommendations.}
+  \item To understand the software architecture of the monorepo, mapping how the mobile app, backend, web dashboard, and machine learning service communicate.
+  \item To implement and configure a local rule-based screening engine in Flutter for immediate offline alerts on Android devices.
+  \item To connect the Flutter app and Spring Boot backend to the FastAPI BERT service for advanced server-side text classification.
+  \item To study the data schema and implement secure user registration, login, and scan history tracking.
+  \item To explore the admin web dashboard and identify the steps required to link its user interface with real backend statistics.
 \end{enumerate}
 
-\section{Scope}
-\placeholder{Define what the report and system cover, including message types, transaction context, users, components, and evaluation boundaries. State what is explicitly outside scope.}
+\section{Scope of the Work}
+My work during the eight weeks was focused on the components contained in the Argus monorepo:
+\begin{itemize}
+  \item The mobile app in the \texttt{frontend/} directory, including Android SMS reading permissions, local notifications, and user interfaces.
+  \item The Spring Boot API in the \texttt{backend/} folder, managing security with JSON Web Tokens (JWT) and PostgreSQL database storage.
+  \item The Python machine learning service in the root directory, loading a pre-trained BERT classifier on FastAPI.
+  \item The React administrative client in the \texttt{web-client/} folder.
+\end{itemize}
+My focus was on understanding how these components exchange data, and identifying and resolving integration issues to make the system more cohesive.
 
-\section{Significance}
-\placeholder{Explain the technical, operational, security, or learning significance of the project without claiming benefits that were not observed.}
+\section{Significance of the Project}
+This project is highly significant for several reasons:
+\begin{itemize}
+  \item \textbf{User Protection:} It provides a real-time warning system on users' mobile phones, helping to prevent scams and financial fraud.
+  \item \textbf{Heuristic and AI Integration:} It combines fast, offline-capable local keyword rules with an advanced machine learning model on the cloud, balancing speed and accuracy.
+  \item \textbf{Administrative Oversight:} It enables telecommunication administrators to view fraud trends and block malicious senders through a centralized web portal.
+\end{itemize}
 
-\section{Limitations}
-\placeholder{Record known limitations such as data access, label quality, time, infrastructure, privacy restrictions, class imbalance, or incomplete deployment.}
+\section{Limitations of the Work}
+While the project provides a strong foundation, there were several limitations during my work:
+\begin{itemize}
+  \item Android has strict security policies for SMS reading, which requires specific runtime permissions and makes the application platform-specific.
+  \item The machine learning model requires significant computing power, so the AI classification must be done on the server rather than locally on the phone.
+  \item Some parts of the web administrator dashboard and mobile feedback routes are still prototypes that use simulated data and require full backend integration.
+  \item I did not have access to a large, real-world Tanzanian SMS dataset to retrain or fine-tune the BERT model, meaning we rely on the pre-saved weights.
+\end{itemize}
 
-\section{Report Organization}
-This report is organized as follows:
+\section{Organization of the Report}
+This report is organized into eight chapters as follows:
 \begin{description}[style=multiline,leftmargin=0pt,labelwidth=25mm]
-  \item[\chapterref{ch:context}] \placeholder{Summarize the organizational and technical context.}
-  \item[\chapterref{ch:requirements}] \placeholder{Summarize problem analysis and requirements.}
-  \item[\chapterref{ch:design}] \placeholder{Summarize the design and methodology.}
-  \item[\chapterref{ch:implementation}] \placeholder{Summarize the implementation.}
-  \item[\chapterref{ch:testing}] \placeholder{Summarize testing and results.}
-  \item[\chapterref{ch:discussion}] \placeholder{Summarize discussion and lessons learned.}
-  \item[\chapterref{ch:conclusion}] \placeholder{Summarize conclusions and recommendations.}
+  \item[\chapterref{ch:context}] \textbf{Organizational and Technical Context:} Describes Vodacom Tanzania and the technical environment.
+  \item[\chapterref{ch:requirements}] \textbf{Problem Analysis and System Requirements:} Defines functional and non-functional requirements and user use cases.
+  \item[\chapterref{ch:design}] \textbf{System Design and Methodology:} Outlines the system architecture, NLP methods, and data flows.
+  \item[\chapterref{ch:implementation}] \textbf{Implementation:} Describes the coding environment, directory structure, and code snippets.
+  \item[\chapterref{ch:testing}] \textbf{Testing and Results:} Highlights testing activities, manual and automated verification, and performance.
+  \item[\chapterref{ch:discussion}] \textbf{Discussion:} Analyzes what worked well, what did not, and security and privacy trade-offs.
+  \item[\chapterref{ch:conclusion}] \textbf{Conclusion and Recommendations:} Summarizes achievements and lists future work priorities.
 \end{description}
